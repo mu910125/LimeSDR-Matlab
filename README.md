@@ -15,15 +15,15 @@ Before starting, run `help limeSDR.build_thunk` to view instructions on how to h
 5. ***_results***      - folder with simulation results
 
 ### Prerequisites
-1. Matlab
-2. LimeSuite 19.04
+1. Matlab 2022b
+2. LimeSuite 22.09
 2. Compatible compiler (VS++ is recommended)
 3. LimeSDR-USB
 
 ### Installation
 Steps for the successfull installation:
 1. Check that the compatible compiler is installed and Matlab recongises it (`mex --setup`)
-2. Check that the LimeSuite 19.04 is installed (you need LimeSuite.dll file)
+2. Check that the LimeSuite 22.09 is installed (you need to copy LimeSuite.dll file to _library dir)
 3. Run from Matlab `limeSDR.build_thunk();`
 4. Connect LimeSDR-USB
 5. Update Firmware `limeutil --update`
@@ -31,16 +31,16 @@ Steps for the successfull installation:
 
 ### System configuration
 Original system configuration:
-1. Windows 10 Pro
-2. Visual Studio Professional 2015 (compiler)
-3. Matlab 2018b
+1. Windows 11 Pro
+2. Visual Studio Professional 2022 (compiler)
+3. Matlab 2022b
 4. LimeSDR-USB
 
 ### Known issues
 Library for the Simulink was not modified and probably doesn't work.
 
 ### Reference
-The code is based on the work from [Jockover](https://github.com/jocover/Simulink-MATLAB-LimeSDR)
+The code is based on the work from [Jockover](https://github.com/jocover/Simulink-MATLAB-LimeSDR) and [RakhDamir](https://github.com/RakhDamir/LimeSDR-Matlab)
 
 
 
