@@ -21,7 +21,7 @@ Thumbs.db
 *.obj
 *.exp
 *.lib
-
+*.dll
 
 _results/checkRxPhaseAlign.mat
 *.mat
