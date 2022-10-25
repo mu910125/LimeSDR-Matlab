@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "LMS7002M_parameters.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +39,6 @@ extern "C" {
 #endif
 
 #if defined _WIN32 || defined __CYGWIN__
-#   include <windows.h>
 #   define CALL_CONV __cdecl
 #   ifdef __GNUC__
 #       define API_EXPORT __attribute__ ((dllexport))
@@ -53,22 +53,9 @@ extern "C" {
      *  This is OS and/or compiler-specific. */
 #   define CALL_CONV
 #else
-#   define API_EXPORT __attribute__ ((visibility ("default")))
+#   define API_EXPORT
 #   define CALL_CONV
 #endif
-
-#define LMS7param(id) LMS7_ ## id
-
-struct LMS7Parameter
-{
-    uint16_t address;
-    uint8_t msb;
-    uint8_t lsb;
-    uint16_t defaultValue;
-    const char* name;
-    const char* tooltip;
-};
-
 
 ///Floating point data type
 typedef double float_type;
@@ -148,7 +135,7 @@ typedef char lms_name_t[16];
 typedef struct
 {
     float_type min;     ///<Minimum allowed value
-    float_type max;     ///<Minimum allowed value
+    float_type max;     ///<Maximum allowed value
     float_type step;    ///<Minimum value step
 }lms_range_t;
 
@@ -363,6 +350,10 @@ API_EXPORT int CALL_CONV LMS_GetAntennaBW(lms_device_t *dev, bool dir_tx,
  * @note actual gain depends on LO frequency and analog LPF configuration and
  * resulting output signal level may be different when those values are changed
  *
+ * @attention Gain functionality will be changed in the future. IAMP 
+ * and TIA gain elements won't configured via this function. To enable new 
+ * behaviour, turn on ENABLE_NEW_GAIN_BEHAVIOUR CMake option. 
+ * 
  * @param   device      Device handle previously obtained by LMS_Open().
  * @param   dir_tx      Select RX or TX
  * @param   chan        Channel index
@@ -381,6 +372,10 @@ API_EXPORT int CALL_CONV LMS_SetNormalizedGain(lms_device_t *device, bool dir_tx
  * @note actual gain depends on LO frequency and analog LPF configuration and
  * resulting output signal levle may be different when those values are changed
  *
+ * @attention Gain functionality and range will be changed in the future. IAMP 
+ * and TIA gain elements won't configured via this function. To enable new 
+ * behaviour, turn on ENABLE_NEW_GAIN_BEHAVIOUR CMake option.
+ * 
  * @param   device      Device handle previously obtained by LMS_Open().
  * @param   dir_tx      Select RX or TX
  * @param   chan        Channel index
@@ -396,6 +391,10 @@ API_EXPORT int CALL_CONV LMS_SetGaindB(lms_device_t *device, bool dir_tx,
  * @note actual gain depends on LO frequency and analog LPF configuration and
  * resulting output signal level may be different when those values are changed
  *
+ * @attention Gain functionality will be changed in the future. IAMP and TIA gain 
+ * element values won't be obtained via this function. To enable new 
+ * behaviour, turn on ENABLE_NEW_GAIN_BEHAVIOUR CMake option.
+ * 
  * @param       device      Device handle previously obtained by LMS_Open().
  * @param       dir_tx      Select RX or TX
  * @param       chan        Channel index
@@ -411,6 +410,10 @@ API_EXPORT int CALL_CONV LMS_GetNormalizedGain(lms_device_t *device, bool dir_tx
  * @note actual gain depends on LO frequency and analog LPF configuration and
  * resulting output signal level may be different when those values are changed
  *
+ * @attention Gain functionality and range will be changed in the future. IAMP 
+ * and TIA gain element values won't be obtained via this function. To enable new 
+ * behaviour, turn on ENABLE_NEW_GAIN_BEHAVIOUR CMake option.
+ * 
  * @param       device      Device handle previously obtained by LMS_Open().
  * @param       dir_tx      Select RX or TX
  * @param       chan        Channel index
@@ -1099,6 +1102,15 @@ typedef struct
         LMS_FMT_I16,      ///<16-bit integers
         LMS_FMT_I12       ///<12-bit integers stored in 16-bit variables
     }dataFmt;
+
+    //! Data link format
+    enum
+    {
+        LMS_LINK_FMT_DEFAULT=0, ///<12-bit integers stored in 16-bit variables 
+                                /// when dataFmt=LMS_FMT_I12, 16-bit otherwise
+        LMS_LINK_FMT_I16,       ///<16-bit integers
+        LMS_LINK_FMT_I12        ///<12-bit integers
+    }linkFmt;
 }lms_stream_t;
 
 /**Streaming status structure*/
@@ -1299,7 +1311,7 @@ API_EXPORT const lms_dev_info_t* CALL_CONV LMS_GetDeviceInfo(lms_device_t *devic
 /**
 * @brief Returns API library version
 */
-API_EXPORT const char* LMS_GetLibraryVersion();
+API_EXPORT const char* LMS_GetLibraryVersion(void);
 
 /**
  * Get the error message detailing why the last error occurred.
